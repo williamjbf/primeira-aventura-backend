@@ -1,4 +1,4 @@
-package github.williamjbf.primeiraaventura;
+package github.williamjbf.primeiraaventura.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
