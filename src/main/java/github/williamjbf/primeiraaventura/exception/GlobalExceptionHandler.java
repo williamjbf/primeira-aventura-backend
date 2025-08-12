@@ -1,6 +1,7 @@
 package github.williamjbf.primeiraaventura.exception;
 
 import github.williamjbf.primeiraaventura.user.exception.EmailNotFoundException;
+import github.williamjbf.primeiraaventura.user.exception.UserAlreadyExistsException;
 import github.williamjbf.primeiraaventura.user.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,4 +42,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<Map<String, String>> handleUserAlreadyExists(UserAlreadyExistsException ex) {
+        return new ResponseEntity<>(ex.getErrors(), HttpStatus.BAD_REQUEST);
+    }
 }

@@ -6,6 +6,7 @@ import github.williamjbf.primeiraaventura.user.dto.LoginResponseDTO;
 import github.williamjbf.primeiraaventura.user.dto.UserRequestDTO;
 import github.williamjbf.primeiraaventura.user.model.User;
 import github.williamjbf.primeiraaventura.user.repository.UserRepository;
+import github.williamjbf.primeiraaventura.user.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,25 +23,21 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final UserService userService;
 
-    public AuthController(AuthenticationManager authenticationManager, JwtUtil jwtUtil, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthController(AuthenticationManager authenticationManager, JwtUtil jwtUtil, UserService userService) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
+        this.userService = userService;
     }
 
     @PostMapping("/register")
     public LoginResponseDTO register(@Valid @RequestBody UserRequestDTO userRequest) {
-        final String uncodedePassword = (userRequest.getPassword());
-        userRequest.setPassword(passwordEncoder.encode(userRequest.getPassword()));
-        userRepository.save(userRequest.toUser());
+        userService.createUser(userRequest);
 
         LoginRequestDTO loginRequest = new LoginRequestDTO();
         loginRequest.setUsername(userRequest.getUsername());
-        loginRequest.setPassword(uncodedePassword);
+        loginRequest.setPassword(userRequest.getPassword());
         return this.login(loginRequest);
     }
 
