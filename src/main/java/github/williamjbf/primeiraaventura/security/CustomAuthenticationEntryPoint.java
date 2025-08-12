@@ -1,6 +1,7 @@
 package github.williamjbf.primeiraaventura.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import github.williamjbf.primeiraaventura.exception.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
@@ -24,14 +25,18 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
 
-        Map<String, Object> body = new HashMap<>();
-        body.put("status", HttpStatus.UNAUTHORIZED.value());
-        body.put("error", "Unauthorized");
-        body.put("message", "Usuário ou senha inválidos");
-        body.put("path", request.getServletPath());
+        Map<String, String> erros = Map.of("auth", "Usuário ou senha inválidos");
+
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.UNAUTHORIZED.value(),
+                "Unauthorized",
+                request.getServletPath(),
+                erros
+        );
 
         ObjectMapper mapper = new ObjectMapper();
-        mapper.writeValue(response.getOutputStream(), body);
+        mapper.findAndRegisterModules();
+        mapper.writeValue(response.getOutputStream(), errorResponse);
     }
 
 }
