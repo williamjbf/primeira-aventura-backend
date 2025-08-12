@@ -31,10 +31,15 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String register(@RequestBody User user) {
+    public LoginResponseDTO register(@RequestBody User user) {
+        final String uncodedePassword = (user.getPassword());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
-        return "Usuário registrado com sucesso!";
+
+        LoginRequestDTO loginRequest = new LoginRequestDTO();
+        loginRequest.setUsername(user.getUsername());
+        loginRequest.setPassword(uncodedePassword);
+        return this.login(loginRequest);
     }
 
     @PostMapping("/login")
