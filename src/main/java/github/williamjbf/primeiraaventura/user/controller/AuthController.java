@@ -3,8 +3,10 @@ package github.williamjbf.primeiraaventura.user.controller;
 import github.williamjbf.primeiraaventura.security.JwtUtil;
 import github.williamjbf.primeiraaventura.user.dto.LoginRequestDTO;
 import github.williamjbf.primeiraaventura.user.dto.LoginResponseDTO;
+import github.williamjbf.primeiraaventura.user.dto.UserRequestDTO;
 import github.williamjbf.primeiraaventura.user.model.User;
 import github.williamjbf.primeiraaventura.user.repository.UserRepository;
+import jakarta.validation.Valid;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -31,13 +33,13 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public LoginResponseDTO register(@RequestBody User user) {
-        final String uncodedePassword = (user.getPassword());
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
+    public LoginResponseDTO register(@Valid @RequestBody UserRequestDTO userRequest) {
+        final String uncodedePassword = (userRequest.getPassword());
+        userRequest.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+        userRepository.save(userRequest.toUser());
 
         LoginRequestDTO loginRequest = new LoginRequestDTO();
-        loginRequest.setUsername(user.getUsername());
+        loginRequest.setUsername(userRequest.getUsername());
         loginRequest.setPassword(uncodedePassword);
         return this.login(loginRequest);
     }

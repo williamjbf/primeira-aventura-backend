@@ -1,5 +1,7 @@
 package github.williamjbf.primeiraaventura.user.service;
 
+import github.williamjbf.primeiraaventura.user.exception.EmailNotFoundException;
+import github.williamjbf.primeiraaventura.user.exception.UserNotFoundException;
 import github.williamjbf.primeiraaventura.user.model.User;
 import github.williamjbf.primeiraaventura.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,5 +29,15 @@ public class UserService implements UserDetailsService {
                 .password(user.getPassword()) // senha já criptografada
                 .roles("USER")
                 .build();
+    }
+
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado: " + username));
+    }
+
+    public User findByEmail(String email){
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new EmailNotFoundException("Email do usuário ão encontrado: " + email));
     }
 }
