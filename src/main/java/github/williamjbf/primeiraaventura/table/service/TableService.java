@@ -1,5 +1,6 @@
 package github.williamjbf.primeiraaventura.table.service;
 
+import github.williamjbf.primeiraaventura.table.dto.RecentTableDTO;
 import github.williamjbf.primeiraaventura.table.dto.TableRequestDTO;
 import github.williamjbf.primeiraaventura.table.dto.TableResponseDTO;
 import github.williamjbf.primeiraaventura.table.model.TableRPG;
@@ -7,6 +8,8 @@ import github.williamjbf.primeiraaventura.table.repository.TableRepository;
 import github.williamjbf.primeiraaventura.user.model.User;
 import github.williamjbf.primeiraaventura.user.service.UserService;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class TableService {
@@ -43,6 +46,20 @@ public class TableService {
                 .narrador(salva.getGameMaster().getUsername())
                 .tags(salva.getTags())
                 .build();
+    }
+
+    public List<RecentTableDTO> buscarMesasRecentes() {
+        return tableRepository.findTop16byOrderByCreatedAtDesc()
+                .stream()
+                .map(m -> new RecentTableDTO(
+                        m.getId(),
+                        m.getImage(),
+                        m.getName(),
+                        m.getSystem(),
+                        m.getGameMaster().getUsername(),
+                        m.getCreatedAt()
+                ))
+                .toList();
     }
 
 }
