@@ -1,8 +1,9 @@
 package github.williamjbf.primeiraaventura.table.dto;
 
+import github.williamjbf.primeiraaventura.tag.model.Tag;
 import lombok.*;
 
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -14,12 +15,6 @@ public class TableRequestDTO {
     private String resumo;
     private String sistema;
     private String imagem;
-    private NarradorRequest narrador;
-    private List<String> tags;
-
-    @Setter
-    @Getter
-    public class NarradorRequest {
-        private Long id;
-    }
+    private Long idNarrador;
+    private Set<Long> idTags;
 }

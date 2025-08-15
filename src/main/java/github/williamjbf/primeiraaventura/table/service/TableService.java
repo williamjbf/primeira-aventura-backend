@@ -1,12 +1,17 @@
 package github.williamjbf.primeiraaventura.table.service;
 
 import github.williamjbf.primeiraaventura.table.dto.RecentTableDTO;
+import github.williamjbf.primeiraaventura.table.dto.TableFilterDTO;
 import github.williamjbf.primeiraaventura.table.dto.TableRequestDTO;
 import github.williamjbf.primeiraaventura.table.dto.TableResponseDTO;
 import github.williamjbf.primeiraaventura.table.model.TableRPG;
 import github.williamjbf.primeiraaventura.table.repository.TableRepository;
+import github.williamjbf.primeiraaventura.table.specification.TableSpecification;
+import github.williamjbf.primeiraaventura.tag.model.Tag;
+import github.williamjbf.primeiraaventura.tag.service.TagService;
 import github.williamjbf.primeiraaventura.user.model.User;
 import github.williamjbf.primeiraaventura.user.service.UserService;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,15 +21,19 @@ public class TableService {
 
     private final TableRepository tableRepository;
     private final UserService userService;
+    private final TagService tagService;
 
-    public TableService(TableRepository tableRepository, UserService userService) {
+    public TableService(TableRepository tableRepository, UserService userService, TagService tagService) {
         this.tableRepository = tableRepository;
         this.userService = userService;
+        this.tagService = tagService;
     }
 
     public TableResponseDTO criarMesa(TableRequestDTO dto) {
 
-        User user = userService.findById(dto.getNarrador().getId());
+        User user = userService.findById(dto.getIdNarrador());
+
+        List<Tag> tags = tagService.getTagsByIds(dto.getIdTags().stream().toList());
 
         TableRPG mesa = TableRPG.builder()
                 .name(dto.getNome())
@@ -32,14 +41,14 @@ public class TableService {
                 .system(dto.getSistema())
                 .image(dto.getImagem())
                 .gameMaster(user)
-                .tags(dto.getTags())
+                .tags(tags)
                 .build();
 
         TableRPG salva = tableRepository.save(mesa);
 
         return TableResponseDTO.builder()
                 .id(salva.getId())
-                .nome(salva.getName())
+                .titulo(salva.getName())
                 .resumo(salva.getSummary())
                 .sistema(salva.getSystem())
                 .imagem(salva.getImage())
@@ -60,6 +69,28 @@ public class TableService {
                         m.getCreatedAt()
                 ))
                 .toList();
+    }
+
+    public List<TableResponseDTO> buscarMesasPorFiltro(TableFilterDTO filtro) {
+        Specification<TableRPG> spec = Specification
+                .where(TableSpecification.tituloContem(filtro.getTitulo()))
+                .and(TableSpecification.sistemaIgual(filtro.getSistema()))
+                .and(TableSpecification.tagsContem(filtro.getTags()))
+                .and(TableSpecification.usuarioIgual(filtro.getUsuario()));
+
+        List<TableResponseDTO> list = tableRepository.findAll(spec).stream().map(
+                t -> new TableResponseDTO(
+                        t.getId(),
+                        t.getName(),
+                        t.getSummary(),
+                        t.getSystem(),
+                        t.getImage(),
+                        t.getGameMaster().getUsername(),
+                        t.getTags()
+                )
+        ).toList();
+
+        return list;
     }
 
 }

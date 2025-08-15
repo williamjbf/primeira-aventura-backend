@@ -1,5 +1,6 @@
 package github.williamjbf.primeiraaventura.table.dto;
 
+import github.williamjbf.primeiraaventura.tag.model.Tag;
 import lombok.*;
 
 import java.util.List;
@@ -11,10 +12,10 @@ import java.util.List;
 @Builder
 public class TableResponseDTO {
     private Long id;
-    private String nome;
+    private String titulo;
     private String resumo;
     private String sistema;
     private String imagem;
     private String narrador;
-    private List<String> tags;
+    private List<Tag> tags;
 }

@@ -1,6 +1,7 @@
 package github.williamjbf.primeiraaventura.table.controller;
 
 import github.williamjbf.primeiraaventura.table.dto.RecentTableDTO;
+import github.williamjbf.primeiraaventura.table.dto.TableFilterDTO;
 import github.williamjbf.primeiraaventura.table.dto.TableRequestDTO;
 import github.williamjbf.primeiraaventura.table.dto.TableResponseDTO;
 import github.williamjbf.primeiraaventura.table.service.TableService;
@@ -28,5 +29,10 @@ public class TableController {
     @GetMapping("/recentes")
     public ResponseEntity<List<RecentTableDTO>> getMesasRecentes() {
         return ResponseEntity.ok(tableService.buscarMesasRecentes());
+    }
+
+    @PostMapping("/buscar")
+    public List<TableResponseDTO> buscarMesas(@RequestBody TableFilterDTO filtro) {
+        return tableService.buscarMesasPorFiltro(filtro);
     }
 }

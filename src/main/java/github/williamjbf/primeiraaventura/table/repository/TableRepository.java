@@ -2,11 +2,12 @@ package github.williamjbf.primeiraaventura.table.repository;
 
 import github.williamjbf.primeiraaventura.table.model.TableRPG;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface TableRepository extends JpaRepository<TableRPG, Long> {
+public interface TableRepository extends JpaRepository<TableRPG, Long>, JpaSpecificationExecutor<TableRPG> {
 
     @Query("""
             SELECT t FROM TableRPG t
