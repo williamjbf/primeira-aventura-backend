@@ -3,6 +3,7 @@ package github.williamjbf.primeiraaventura.security;
 import github.williamjbf.primeiraaventura.user.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Lazy;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -32,18 +34,33 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         final String jwt;
         final String username;
 
-        // Se não tiver token ou não começar com "Bearer ", segue para o próximo filtro
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
+            filterChain.doFilter(request, response); // não tem cookie, segue normalmente (rota pública)
             return;
         }
 
-        jwt = authHeader.substring(7); // Remove o "Bearer "
-        username = jwtService.extractUsername(jwt);
+        Cookie authCookie = Arrays.stream(cookies)
+                .filter(c -> "authToken".equals(c.getName()))
+                .findFirst()
+                .orElse(null);
+
+        if (authCookie == null) {
+            filterChain.doFilter(request, response); // sem cookie, segue normalmente
+            return;
+        }
+
+        jwt = authCookie.getValue();
+
+        try {
+            username = jwtService.extractUsername(jwt);
+        } catch (Exception e) {
+            filterChain.doFilter(request, response); // token inválido, segue sem autenticar
+            return;
+        }
 
         // Verifica se usuário não está autenticado ainda
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {

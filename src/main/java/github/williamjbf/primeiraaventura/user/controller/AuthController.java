@@ -5,7 +5,11 @@ import github.williamjbf.primeiraaventura.user.dto.LoginRequestDTO;
 import github.williamjbf.primeiraaventura.user.dto.LoginResponseDTO;
 import github.williamjbf.primeiraaventura.user.dto.UserRequestDTO;
 import github.williamjbf.primeiraaventura.user.service.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -30,24 +34,32 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public LoginResponseDTO register(@Valid @RequestBody UserRequestDTO userRequest) {
+    public ResponseEntity<String> register(@Valid @RequestBody UserRequestDTO userRequest, HttpServletResponse response) {
         userService.createUser(userRequest);
 
         LoginRequestDTO loginRequest = new LoginRequestDTO();
         loginRequest.setUsername(userRequest.getUsername());
         loginRequest.setPassword(userRequest.getPassword());
-        return this.login(loginRequest);
+        return this.login(loginRequest, response);
     }
 
     @PostMapping("/login")
-    public LoginResponseDTO login(@RequestBody LoginRequestDTO loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
+    public ResponseEntity<String> login(@RequestBody LoginRequestDTO loginRequest, HttpServletResponse response) {
+        authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
         );
         UserDetails userDetails = userService.loadUserByUsername(loginRequest.getUsername());
         String token = jwtService.generateToken(userDetails);
 
-        return new LoginResponseDTO(token);
+        Cookie cookie = new Cookie("authToken", token);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(false); // true se estiver em HTTPS
+        cookie.setPath("/");
+        cookie.setMaxAge(60 * 60 * 10); //10 hrs
+
+        response.addCookie(cookie);
+
+        return ResponseEntity.ok("Login efetuado com sucesso");
     }
 
 }
