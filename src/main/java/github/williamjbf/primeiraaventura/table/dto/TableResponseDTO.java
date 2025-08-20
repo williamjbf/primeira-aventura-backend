@@ -16,6 +16,14 @@ public class TableResponseDTO {
     private String resumo;
     private String sistema;
     private String imagem;
-    private String narrador;
+    private Narrador narrador;
     private List<Tag> tags;
+
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    public static class Narrador {
+        private Long id;
+        private String nome;
+    }
 }

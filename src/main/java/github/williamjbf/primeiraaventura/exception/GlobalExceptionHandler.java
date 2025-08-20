@@ -1,5 +1,6 @@
 package github.williamjbf.primeiraaventura.exception;
 
+import github.williamjbf.primeiraaventura.table.exception.TableNotFoundException;
 import github.williamjbf.primeiraaventura.user.exception.EmailNotFoundException;
 import github.williamjbf.primeiraaventura.user.exception.UserAlreadyExistsException;
 import github.williamjbf.primeiraaventura.user.exception.UserNotFoundException;
@@ -78,5 +79,20 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(TableNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleTableNotFoundException(TableNotFoundException ex, WebRequest request){
+
+        Map<String, String> errors = Map.of("mesa", ex.getMessage());
+
+        ErrorResponse response = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                request.getDescription(false).replace("uri=", ""),
+                errors
+        );
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 }

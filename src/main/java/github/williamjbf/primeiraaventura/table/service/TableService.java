@@ -15,6 +15,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TableService {
@@ -52,7 +53,10 @@ public class TableService {
                 .resumo(salva.getSummary())
                 .sistema(salva.getSystem())
                 .imagem(salva.getImage())
-                .narrador(salva.getGameMaster().getUsername())
+                .narrador(new TableResponseDTO.Narrador(
+                        salva.getGameMaster().getId(),
+                        salva.getGameMaster().getUsername()
+                ))
                 .tags(salva.getTags())
                 .build();
     }
@@ -85,7 +89,10 @@ public class TableService {
                         t.getSummary(),
                         t.getSystem(),
                         t.getImage(),
-                        t.getGameMaster().getUsername(),
+                        new TableResponseDTO.Narrador(
+                                t.getGameMaster().getId(),
+                                t.getGameMaster().getUsername()
+                        ),
                         t.getTags()
                 )
         ).toList();
@@ -93,4 +100,27 @@ public class TableService {
         return list;
     }
 
+    public TableResponseDTO buscarMesaPorId(Long id) {
+
+        Optional<TableRPG> optinalTable = tableRepository.findById(id);
+
+        if (optinalTable.isEmpty()) {
+            throw new RuntimeException("Mesa não encontrada");
+        }
+
+        TableRPG table = optinalTable.get();
+
+        return new TableResponseDTO(
+                table.getId(),
+                table.getName(),
+                table.getSummary(),
+                table.getSystem(),
+                table.getImage(),
+                new TableResponseDTO.Narrador(
+                        table.getGameMaster().getId(),
+                        table.getGameMaster().getUsername()
+                ),
+                table.getTags()
+        );
+    }
 }

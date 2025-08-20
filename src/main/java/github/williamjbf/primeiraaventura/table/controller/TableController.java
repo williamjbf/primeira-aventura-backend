@@ -35,4 +35,9 @@ public class TableController {
     public List<TableResponseDTO> buscarMesas(@RequestBody TableFilterDTO filtro) {
         return tableService.buscarMesasPorFiltro(filtro);
     }
+
+    @GetMapping("/{id}")
+    public TableResponseDTO buscarMesaPorId(@PathVariable Long id) {
+        return tableService.buscarMesaPorId(id);
+    }
 }
