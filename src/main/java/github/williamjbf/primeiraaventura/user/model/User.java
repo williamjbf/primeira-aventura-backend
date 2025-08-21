@@ -31,6 +31,6 @@ public class User extends AuditableEntity {
     @Column(nullable = false)
     private String password;
 
-    @OneToMany(mappedBy = "gameMaster", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "narrador", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TableRPG> mesas = new ArrayList<>();
 }

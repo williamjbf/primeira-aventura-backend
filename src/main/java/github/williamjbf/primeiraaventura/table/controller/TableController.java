@@ -1,13 +1,14 @@
 package github.williamjbf.primeiraaventura.table.controller;
 
-import github.williamjbf.primeiraaventura.table.dto.RecentTableDTO;
-import github.williamjbf.primeiraaventura.table.dto.TableFilterDTO;
-import github.williamjbf.primeiraaventura.table.dto.TableRequestDTO;
-import github.williamjbf.primeiraaventura.table.dto.TableResponseDTO;
+import github.williamjbf.primeiraaventura.table.dto.*;
+import github.williamjbf.primeiraaventura.table.model.TableRPG;
 import github.williamjbf.primeiraaventura.table.service.TableService;
 import jakarta.validation.Valid;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartException;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -39,5 +40,18 @@ public class TableController {
     @GetMapping("/{id}")
     public TableResponseDTO buscarMesaPorId(@PathVariable Long id) {
         return tableService.buscarMesaPorId(id);
+    }
+
+    @PostMapping(
+            value = "/save",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
+    public ResponseEntity<TableResponseDTO
+            > saveTable(
+            @ModelAttribute SaveTableRequestDTO saveTableRequestDTO
+            ) {
+
+        TableResponseDTO tableResponseDTO = tableService.saveTable(saveTableRequestDTO);
+        return ResponseEntity.ok(tableResponseDTO);
     }
 }

@@ -8,9 +8,7 @@ import lombok.*;
 import org.hibernate.annotations.Where;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -27,20 +25,20 @@ public class TableRPG extends AuditableEntity {
     private Long id;
 
     @Column(nullable = false)
-    private String name;
+    private String titulo;
 
     @Column(columnDefinition = "TEXT")
-    private String summary;
+    private String resumo;
 
     @Column(nullable = false)
-    private String system;
+    private String sistema;
 
     @Column
-    private String image;
+    private String imagem;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_game_master", nullable = false)
-    private User gameMaster;
+    @JoinColumn(name = "id_narrador", nullable = false)
+    private User narrador;
 
     @ManyToMany
     @JoinTable(
@@ -50,4 +48,9 @@ public class TableRPG extends AuditableEntity {
     )
     private List<Tag> tags = new ArrayList<>();
 
+    @Column(nullable = false)
+    private String local;
+
+    @Column(columnDefinition = "TEXT")
+    private String horario;
 }

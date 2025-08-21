@@ -11,10 +11,21 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 public class TableRequestDTO {
-    private String nome;
+    private Long id;
+    private String titulo;
     private String resumo;
     private String sistema;
     private String imagem;
-    private Long idNarrador;
-    private Set<Long> idTags;
+    private Long narradorId;
+    private Set<Long> tags;
+    private String local;
+    private Horario horario;
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    public static class Horario {
+        private String dia;
+        private String hora;
+    }
 }
