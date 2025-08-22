@@ -3,6 +3,8 @@ package github.williamjbf.primeiraaventura.table.controller;
 import github.williamjbf.primeiraaventura.table.dto.*;
 import github.williamjbf.primeiraaventura.table.model.TableRPG;
 import github.williamjbf.primeiraaventura.table.service.TableService;
+import github.williamjbf.primeiraaventura.table.subscription.model.SubscriptionStatus;
+import github.williamjbf.primeiraaventura.table.subscription.service.TableSubscriptionService;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +19,11 @@ import java.util.List;
 public class TableController {
 
     private final TableService tableService;
+    private final TableSubscriptionService tableSubscriptionService;
 
-    public TableController(TableService tableService) {
+    public TableController(TableService tableService, TableSubscriptionService tableSubscriptionService) {
         this.tableService = tableService;
+        this.tableSubscriptionService = tableSubscriptionService;
     }
 
     @PostMapping
@@ -54,4 +58,20 @@ public class TableController {
         TableResponseDTO tableResponseDTO = tableService.saveTable(saveTableRequestDTO);
         return ResponseEntity.ok(tableResponseDTO);
     }
+
+    @GetMapping("/participate/{userId}")
+    public List<TableListItemDTO> listarMesasQueUsuarioParticipa(@PathVariable Long userId) {
+        return tableSubscriptionService.listarMesasInscritasPorStatus(userId, SubscriptionStatus.ACEITO);
+    }
+
+    @GetMapping("/owner/{userId}")
+    public List<TableListItemDTO> listarMesasPorDono(@PathVariable Long userId) {
+        return tableService.listarMesasPorNarrador(userId);
+    }
+
+    @GetMapping("/pending/{userId}")
+    public List<TableListItemDTO> listarMesasPendentes(@PathVariable Long userId){
+        return tableSubscriptionService.listarMesasInscritasPorStatus(userId, SubscriptionStatus.PENDENTE);
+    }
+
 }

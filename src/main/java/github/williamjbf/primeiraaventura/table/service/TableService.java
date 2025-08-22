@@ -102,6 +102,17 @@ public class TableService {
         return this.toResponseDTO(table);
     }
 
+    public List<TableListItemDTO> listarMesasPorNarrador(Long userId) {
+        return tableRepository.findByNarradorId(userId)
+                .stream()
+                .map(t -> TableListItemDTO.builder()
+                        .id(t.getId())
+                        .titulo(t.getTitulo())
+                        .build())
+                .toList();
+    }
+
+
     public TableResponseDTO saveTable(SaveTableRequestDTO request) {
         TableRPG table = Optional.ofNullable(request.getId())
                 .flatMap(tableRepository::findById)
@@ -119,7 +130,8 @@ public class TableService {
 
         // Tags
         try {
-            List<Long> tagIds = objectMapper.readValue(request.getTags(), new TypeReference<>() {});
+            List<Long> tagIds = objectMapper.readValue(request.getTags(), new TypeReference<>() {
+            });
             List<Tag> tags = tagService.getTagsByIds(tagIds);
             table.setTags(tags);
         } catch (Exception e) {
@@ -137,7 +149,7 @@ public class TableService {
             table.setImagem("/uploads/" + fileName); // URL acessível
         }
 
-        if(request.getId() == null && (request.getImagem() == null || request.getImagem().isEmpty())) {
+        if (request.getId() == null && (request.getImagem() == null || request.getImagem().isEmpty())) {
             table.setImagem("/uploads/default.png");
         }
 
@@ -145,7 +157,7 @@ public class TableService {
         return this.toResponseDTO(save);
     }
 
-    public TableResponseDTO toResponseDTO(TableRPG table){
+    public TableResponseDTO toResponseDTO(TableRPG table) {
         return TableResponseDTO.builder()
                 .id(table.getId())
                 .titulo(table.getTitulo())

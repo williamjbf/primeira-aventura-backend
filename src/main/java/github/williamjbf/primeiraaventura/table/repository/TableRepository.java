@@ -16,4 +16,6 @@ public interface TableRepository extends JpaRepository<TableRPG, Long>, JpaSpeci
             LIMIT 16
             """)
     List<TableRPG> findTop16byOrderByCreatedAtDesc();
+
+    List<TableRPG> findByNarradorId(Long userId);
 }
