@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/tables/subscription")
+@RequestMapping("/api/tables/subscribe")
 public class SubscriptionController {
 
     private final TableSubscriptionService tableSubscriptionService;

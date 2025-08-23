@@ -74,4 +74,9 @@ public class TableController {
         return tableSubscriptionService.listarMesasInscritasPorStatus(userId, SubscriptionStatus.PENDENTE);
     }
 
+    @GetMapping("/denied/{userId}")
+    public List<TableListItemDTO> listarMesasNegas(@PathVariable Long userId){
+        return tableSubscriptionService.listarMesasInscritasPorStatus(userId, SubscriptionStatus.RECUSADO);
+    }
+
 }
