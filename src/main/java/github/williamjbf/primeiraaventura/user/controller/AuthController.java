@@ -76,10 +76,8 @@ public class AuthController {
 
         String username = jwtService.extractUsername(authCookie.getValue());
 
-        User user = userService.findByUsername(username);
+        UserResponse user = this.userService.getUser(username);
 
-        UserResponse userResponse = new UserResponse(user.getId(), user.getUsername(), user.getEmail());
-
-        return ResponseEntity.ok(userResponse);
+        return ResponseEntity.ok(user);
     }
 }
