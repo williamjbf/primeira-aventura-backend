@@ -3,6 +3,7 @@ package github.williamjbf.primeiraaventura.table.controller;
 import github.williamjbf.primeiraaventura.table.dto.*;
 import github.williamjbf.primeiraaventura.table.model.TableRPG;
 import github.williamjbf.primeiraaventura.table.service.TableService;
+import github.williamjbf.primeiraaventura.table.subscription.dto.TableSubscriptionsGroupedResponseDTO;
 import github.williamjbf.primeiraaventura.table.subscription.model.SubscriptionStatus;
 import github.williamjbf.primeiraaventura.table.subscription.service.TableSubscriptionService;
 import jakarta.validation.Valid;
@@ -58,6 +59,13 @@ public class TableController {
         TableResponseDTO tableResponseDTO = tableService.saveTable(saveTableRequestDTO);
         return ResponseEntity.ok(tableResponseDTO);
     }
+
+    @GetMapping("/{id}/subscriptions")
+    public ResponseEntity<TableSubscriptionsGroupedResponseDTO> listarInscricoesAgrupadas(@PathVariable("id") Long tableId) {
+        TableSubscriptionsGroupedResponseDTO response = tableSubscriptionService.listarInscricoesDaMesaAgrupadas(tableId);
+        return ResponseEntity.ok(response);
+    }
+
 
     @GetMapping("/participate/{userId}")
     public List<TableListItemDTO> listarMesasQueUsuarioParticipa(@PathVariable Long userId) {

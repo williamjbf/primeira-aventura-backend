@@ -7,6 +7,8 @@ import github.williamjbf.primeiraaventura.table.repository.TableRepository;
 import github.williamjbf.primeiraaventura.table.service.TableService;
 import github.williamjbf.primeiraaventura.table.subscription.dto.SubscriptionRequestDTO;
 import github.williamjbf.primeiraaventura.table.subscription.dto.SubscriptionResponseDTO;
+import github.williamjbf.primeiraaventura.table.subscription.dto.SubscriptionUserSummaryDTO;
+import github.williamjbf.primeiraaventura.table.subscription.dto.TableSubscriptionsGroupedResponseDTO;
 import github.williamjbf.primeiraaventura.table.subscription.model.SubscriptionStatus;
 import github.williamjbf.primeiraaventura.table.subscription.model.TableSubscription;
 import github.williamjbf.primeiraaventura.table.subscription.repository.TableSubscriptionRepository;
@@ -93,4 +95,64 @@ public class TableSubscriptionService {
                 .build();
     }
 
+    public TableSubscriptionsGroupedResponseDTO listarInscricoesDaMesaAgrupadas(Long tableId) {
+        List<TableSubscription> subs = subscriptionRepository.findAllByTableIdFetchUser(tableId);
+
+        List<SubscriptionUserSummaryDTO> accepted = subs.stream()
+                .filter(s -> s.getStatus() == SubscriptionStatus.ACEITO)
+                .map(s -> SubscriptionUserSummaryDTO.builder()
+                        .id(s.getId())
+                        .userId(s.getUser().getId())
+                        .username(s.getUser().getUsername())
+                        .build())
+                .toList();
+
+        List<SubscriptionUserSummaryDTO> denied = subs.stream()
+                .filter(s -> s.getStatus() == SubscriptionStatus.RECUSADO)
+                .map(s -> SubscriptionUserSummaryDTO.builder()
+                        .id(s.getId())
+                        .userId(s.getUser().getId())
+                        .username(s.getUser().getUsername())
+                        .build())
+                .toList();
+
+        List<SubscriptionUserSummaryDTO> pending = subs.stream()
+                .filter(s -> s.getStatus() == SubscriptionStatus.PENDENTE)
+                .map(s -> SubscriptionUserSummaryDTO.builder()
+                        .id(s.getId())
+                        .userId(s.getUser().getId())
+                        .username(s.getUser().getUsername())
+                        .build())
+                .toList();
+
+        return TableSubscriptionsGroupedResponseDTO.builder()
+                .accepted(accepted)
+                .denied(denied)
+                .pending(pending)
+                .build();
+    }
+
+    public List<SubscriptionResponseDTO> atualizarEmLote(List<Long> ids, SubscriptionStatus status) {
+        List<TableSubscription> subs = subscriptionRepository.findAllById(ids);
+        if (subs.isEmpty()) {
+            return List.of();
+        }
+
+        LocalDateTime agora = LocalDateTime.now();
+        subs.forEach(s -> {
+            s.setStatus(status);
+            s.setUpdatedAt(agora);
+        });
+
+        List<TableSubscription> salvos = subscriptionRepository.saveAll(subs);
+
+        return salvos.stream()
+                .map(saved -> SubscriptionResponseDTO.builder()
+                        .id(saved.getId())
+                        .userId(saved.getUser().getId())
+                        .tableId(saved.getTableRPG().getId())
+                        .status(saved.getStatus())
+                        .build())
+                .toList();
+    }
 }
