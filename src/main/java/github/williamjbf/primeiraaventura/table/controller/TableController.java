@@ -1,7 +1,6 @@
 package github.williamjbf.primeiraaventura.table.controller;
 
 import github.williamjbf.primeiraaventura.table.dto.*;
-import github.williamjbf.primeiraaventura.table.model.TableRPG;
 import github.williamjbf.primeiraaventura.table.service.TableService;
 import github.williamjbf.primeiraaventura.table.subscription.dto.TableSubscriptionsGroupedResponseDTO;
 import github.williamjbf.primeiraaventura.table.subscription.model.SubscriptionStatus;
@@ -10,8 +9,6 @@ import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartException;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -39,7 +36,12 @@ public class TableController {
 
     @PostMapping("/buscar")
     public List<TableResponseDTO> buscarMesas(@RequestBody TableFilterDTO filtro) {
-        return tableService.buscarMesasPorFiltro(filtro);
+        return tableService.buscarMesasPorFiltroAnd(filtro);
+    }
+
+    @PostMapping("/buscar-avancado")
+    public List<TableResponseDTO> buscarMesasAvancado(@RequestBody TableFilterDTO filtro) {
+        return tableService.buscarMesasPorFiltroOr(filtro);
     }
 
     @GetMapping("/{id}")

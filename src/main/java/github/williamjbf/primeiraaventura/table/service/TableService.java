@@ -76,12 +76,25 @@ public class TableService {
                 .toList();
     }
 
-    public List<TableResponseDTO> buscarMesasPorFiltro(TableFilterDTO filtro) {
+    public List<TableResponseDTO> buscarMesasPorFiltroAnd(TableFilterDTO filtro) {
         Specification<TableRPG> spec = Specification
                 .where(TableSpecification.tituloContem(filtro.getTitulo()))
                 .and(TableSpecification.sistemaIgual(filtro.getSistema()))
                 .and(TableSpecification.tagsContem(filtro.getTags()))
                 .and(TableSpecification.usuarioIgual(filtro.getUsuario()));
+
+        List<TableResponseDTO> list = tableRepository.findAll(spec).stream().map(
+                this::toResponseDTO).toList();
+
+        return list;
+    }
+
+    public List<TableResponseDTO> buscarMesasPorFiltroOr(TableFilterDTO filtro) {
+        Specification<TableRPG> spec = Specification
+                .where(TableSpecification.tituloContem(filtro.getTitulo()))
+                .or(TableSpecification.sistemaIgual(filtro.getSistema()))
+                .or(TableSpecification.tagsContem(filtro.getTags()))
+                .or(TableSpecification.usuarioIgual(filtro.getUsuario()));
 
         List<TableResponseDTO> list = tableRepository.findAll(spec).stream().map(
                 this::toResponseDTO).toList();

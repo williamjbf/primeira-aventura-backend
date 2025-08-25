@@ -10,13 +10,13 @@ public class TableSpecification {
     public static Specification<TableRPG> tituloContem(String titulo) {
         return (root, query, cb) ->
                 titulo == null || titulo.isBlank() ? null :
-                        cb.like(cb.lower(root.get("name")), "%" + titulo.toLowerCase() + "%");
+                        cb.like(cb.lower(root.get("titulo")), "%" + titulo.toLowerCase() + "%");
     }
 
     public static Specification<TableRPG> sistemaIgual(String sistema) {
         return (root, query, cb) ->
                 sistema == null || sistema.isBlank() ? null :
-                        cb.equal(cb.lower(root.get("system")), sistema.toLowerCase());
+                        cb.equal(cb.lower(root.get("sistema")), sistema.toLowerCase());
     }
 
     public static Specification<TableRPG> tagsContem(List<String> tags) {
@@ -30,6 +30,6 @@ public class TableSpecification {
     public static Specification<TableRPG> usuarioIgual(String usuario) {
         return (root, query, cb) ->
                 usuario == null || usuario.isBlank() ? null :
-                        cb.equal(cb.lower(root.join("gameMaster").get("username")), usuario.toLowerCase());
+                        cb.equal(cb.lower(root.join("narrador").get("username")), usuario.toLowerCase());
     }
 }

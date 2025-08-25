@@ -44,6 +44,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/tables/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/tables/buscar").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/tables/buscar-avancado").permitAll()
                         .requestMatchers("/uploads/**").permitAll()
                         .anyRequest().authenticated()
                 )
