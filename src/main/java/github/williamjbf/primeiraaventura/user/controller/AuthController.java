@@ -64,6 +64,18 @@ public class AuthController {
         return ResponseEntity.ok("Login efetuado com sucesso");
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity logout(HttpServletResponse response){
+        Cookie cookie = new Cookie("authToken", null);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(false); // true se estiver em HTTPS
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+
+        response.addCookie(cookie);
+        return ResponseEntity.ok("Logout efetuado com sucesso");
+    }
+
     @GetMapping("/user")
     public ResponseEntity<UserResponse> getUser(HttpServletRequest request){
 
