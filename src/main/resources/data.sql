@@ -9,6 +9,10 @@ INSERT INTO users (created_at, deleted_at, updated_at, email, password, username
 SELECT '2025-08-26', null, '2025-08-26', 'bob@example.com', '$2a$10$Vb8pE3jW6Nz5R1QkL5H1QuhM4W6B1xY2lFq2g1Qw5Zp9E6XnUo7yC', 'Bob'
 WHERE NOT EXISTS (SELECT 1 FROM users WHERE email='bob@example.com');
 
+INSERT INTO users (created_at, deleted_at, updated_at, email, password, username)
+SELECT '2025-08-27',null,'2025-08-27','admin@mail.com','$2a$10$iF.cvzC8rUHdfH3Y4YOQ3.4GYTmfzVE5/yramXt3gIVF/Kjf.ADO.','admin'
+WHERE NOT EXISTS (SELECT 1 FROM users WHERE email='admin@mail.com');
+
 -- =====================
 -- TAGS
 -- =====================
