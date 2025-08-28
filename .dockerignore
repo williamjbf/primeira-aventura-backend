@@ -1,0 +1,27 @@
+# .dockerignore para primeira-aventura-backend
+
+# Diretórios de build
+target/
+!target/*.jar
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Runtime
+*.pid
+*.seed
+*.pid.lock
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
